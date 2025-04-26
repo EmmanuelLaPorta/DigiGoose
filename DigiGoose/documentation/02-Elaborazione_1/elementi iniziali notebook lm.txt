@@ -1,0 +1,77 @@
+Classi fondamentali:
+
+Giocatore
+Partita
+Pedina
+Tabellone
+Casella
+
+
+
+Modello UML di UC1:
+
+@startuml
+left to right direction
+
+class Giocatore {
+  + nome: String
+  + colorePedina: String
+}
+
+class Partita {
+  + giocatori: List<Giocatore>
+  + tabellone: Tabellone
+  + pedine: List<Pedina>
+  + avviaPartita()
+  + registraMossa()
+}
+
+class Pedina {
+  + colore: String
+  + posizione: Casella
+}
+
+class Tabellone {
+  + caselle: List<Casella>
+  + inizializzaTabellone()
+}
+
+class Casella {
+  + id: Integer
+}
+
+Partita "1" -- "*" Giocatore : ha >
+Partita "1" -- "1" Tabellone : ha >
+Partita "1" -- "*" Pedina : ha >
+Giocatore "1" -- "1" Pedina : controlla >
+Pedina "1" -- "1" Casella : si trova su >
+Tabellone "1" *-- "*" Casella : contiene (composizione)
+
+@enduml
+
+
+
+Spiegazione UML:
+
+Spiegazione del modello UML e della composizione:
+•
+Giocatore (Player): Rappresenta un partecipante al gioco, con attributi come nome e colorePedina [vedi nostra conversazione precedente].
+•
+Partita (Game): Rappresenta la partita in corso, gestisce i Giocatore, il Tabellone e le Pedina [vedi nostra conversazione precedente]. Include operazioni come avviaPartita() e registraMossa() [vedi nostra conversazione precedente].
+•
+Pedina (Pawn): Rappresenta una pedina con un colore e una posizione sul Tabellone (relazione con Casella) [vedi nostra conversazione precedente]. L'applicazione permetterà ai giocatori di scegliere il colore della propria pedina.
+•
+Tabellone (Board): Rappresenta il tabellone di gioco.
+◦
+La relazione con Casella è di composizione (indicata dal rombo pieno all'estremità di Tabellone e dalla linea continua). Questo significa che il Tabellone è composto da Caselle, e le Caselle non possono esistere indipendentemente dal Tabellone. La loro vita e gestione sono strettamente legate a quella del Tabellone. Questa relazione "tutto-parte" è proprio ciò che il pattern Composite mira a rappresentare.
+◦
+Include l'operazione inizializzaTabellone() [vedi nostra conversazione precedente]. L'applicazione permetterà di visualizzare un tabellone predefinito.
+•
+Casella (Square): Rappresenta una singola casella sul tabellone, con un id e potenziali altre proprietà specifiche [vedi nostra conversazione precedente].
+Giustificazione della composizione (basata sulle fonti):
+•
+Il pattern Composite è utile per rappresentare gerarchie di oggetti tutto-parte. In questo caso, il Tabellone è il "tutto" e le Caselle sono le "parti".
+•
+Una composizione è una forma forte di aggregazione in cui una parte appartiene a una sola istanza del composto e la vita delle parti è limitata da quella del composto. Una Casella appartiene a un solo Tabellone, e se il Tabellone venisse distrutto, anche le sue Caselle cesserebbero di esistere in quel contesto di gioco.
+•
+L'esempio del Board-Square è citato come un esempio di aggregazione composta (composizione)

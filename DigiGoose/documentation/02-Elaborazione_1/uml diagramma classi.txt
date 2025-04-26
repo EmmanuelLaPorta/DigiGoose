@@ -1,0 +1,233 @@
+@startuml DigiGoose - Diagramma delle Classi
+
+' CONTROLLERS
+class GiocoController {
+  - partitaCorrente: Partita
+  - impostazioniPartita: ImpostazioniPartita
+  + avviaNuovaPartita(): void
+  + inserisciNumeroGiocatori(numeroGiocatori: int): void
+  + selezionaTipoGiocatore(indice: int, tipo: String): void
+  + inserisciNomeGiocatore(indice: int, nome: String): void
+  + selezionaColorePedina(indice: int, colore: Colore): boolean
+  + verificaColoreUnico(colore: Colore): boolean
+  + assegnaNomeCPU(indice: int): String
+  + selezionaColorePedinaCPU(indice: int): Colore
+  + confermaImpostazioni(): void
+  + inizializzaNuovaPartita(): void
+  + determinaOrdineGiocatori(): List<Giocatore>
+  + visualizzaTabellone(): void
+  + getPartitaCorrente(): Partita
+  + setPartitaCorrente(partita: Partita): void
+}
+
+class PartitaController {
+  - partita: Partita
+  + iniziaPartita(giocatori: List<Giocatore>): void
+  + getGiocatoreCorrente(): Giocatore
+  + passaTurno(): void
+  + tiraDadi(): int[]
+  + muoviPedina(giocatore: Giocatore, passi: int): Casella
+  + applicaEffettoCasella(casella: Casella, giocatore: Giocatore): void
+  + verificaVincitore(giocatore: Giocatore): boolean
+  + salvaPartita(): void
+  + caricaPartita(): Partita
+}
+
+' MODELS
+class Partita {
+  - id: String
+  - dataCreazione: Date
+  - giocatori: List<Giocatore>
+  - ordineGiocatori: List<Giocatore>
+  - giocatoreCorrente: Giocatore
+  - tabellone: Tabellone
+  - turnoCorrente: int
+  - stato: StatoPartita
+  + Partita()
+  + Partita(giocatori: List<Giocatore>)
+  + getId(): String
+  + getDataCreazione(): Date
+  + getGiocatori(): List<Giocatore>
+  + aggiungiGiocatore(giocatore: Giocatore): void
+  + getOrdineGiocatori(): List<Giocatore>
+  + setOrdineGiocatori(ordine: List<Giocatore>): void
+  + getGiocatoreCorrente(): Giocatore
+  + setGiocatoreCorrente(giocatore: Giocatore): void
+  + getTabellone(): Tabellone
+  + setTabellone(tabellone: Tabellone): void
+  + getTurnoCorrente(): int
+  + incrementaTurno(): void
+  + getStato(): StatoPartita
+  + setStato(stato: StatoPartita): void
+  + determinaOrdineGiocatori(): List<Giocatore>
+  + inizializzaPosizioni(): void
+  + passaAlProssimoGiocatore(): void
+}
+
+class Giocatore {
+  - id: String
+  - nome: String
+  - tipo: TipoGiocatore
+  - pedina: Pedina
+  - turniSaltati: int
+  - richiedeRelancio: boolean
+  + Giocatore(nome: String, tipo: TipoGiocatore, colore: Colore)
+  + getId(): String
+  + getNome(): String
+  + setNome(nome: String): void
+  + getTipo(): TipoGiocatore
+  + getPedina(): Pedina
+  + setPedina(pedina: Pedina): void
+  + getPosizione(): int
+  + setPosizione(posizione: int): void
+  + getTurniSaltati(): int
+  + setTurniSaltati(turni: int): void
+  + getRichiedeRelancio(): boolean
+  + setRichiedeRelancio(relancio: boolean): void
+  + devePassareTurno(): boolean
+  + decrementaTurniSaltati(): void
+}
+
+class GiocatoreFactory {
+  + creaGiocatore(nome: String, tipo: TipoGiocatore, colore: Colore): Giocatore
+  + creaGiocatoreUmano(nome: String, colore: Colore): Giocatore
+  + creaGiocatoreCPU(nome: String, colore: Colore): Giocatore
+}
+
+class Pedina {
+  - colore: Colore
+  - posizione: int
+  + Pedina(colore: Colore)
+  + getColore(): Colore
+  + getPosizione(): int
+  + setPosizione(posizione: int): void
+  + muovi(passi: int): int
+}
+
+class Tabellone {
+  - caselle: List<Casella>
+  + Tabellone()
+  + getCaselle(): List<Casella>
+  + getCasella(posizione: int): Casella
+  + inizializzaTabellone(): void
+  + aggiungiCasella(casella: Casella): void
+  + getPosizioneMassima(): int
+}
+
+class Casella {
+  - numero: int
+  - speciale: boolean
+  - tipoEffetto: TipoEffettoCasella
+  + Casella(numero: int)
+  + getNumero(): int
+  + isSpeciale(): boolean
+  + setSpeciale(speciale: boolean): void
+  + getTipoEffetto(): TipoEffettoCasella
+  + setTipoEffetto(tipo: TipoEffettoCasella): void
+  + applicaEffetto(giocatore: Giocatore): void
+}
+
+class Dadi {
+  - numeroFacce: int
+  - valori: int[]
+  + Dadi(numeroFacce: int, numeroDadi: int)
+  + lancia(): int[]
+  + getSomma(): int
+  + getValori(): int[]
+}
+
+' ENUMS & UTILITIES
+enum TipoGiocatore {
+  UMANO
+  COMPUTER
+}
+
+enum Colore {
+  ROSSO
+  BLU
+  VERDE
+  GIALLO
+  VIOLA
+  ARANCIONE
+}
+
+enum StatoPartita {
+  CONFIGURAZIONE
+  IN_CORSO
+  TERMINATA
+}
+
+enum TipoEffettoCasella {
+  NESSUNO
+  BALZO_E_RILANCIA
+  PONTE
+  RITORNO_INIZIO
+  RADDOPPIA_MOVIMENTO
+  FERMA_UN_TURNO
+  FERMA_DUE_TURNI
+  VOLA_AVANTI
+  ATTENDI_DADO
+  RILANCIA_TORNA_INDIETRO
+  RADDOPPIA_PUNTEGGIO
+  VAI_INDIETRO
+  LABIRINTO
+  PRIGIONE
+}
+
+class ImpostazioniPartita {
+  - numeroGiocatori: int
+  - nomiGiocatori: List<String>
+  - tipiGiocatori: List<TipoGiocatore>
+  - coloriSelezionati: List<Colore>
+  - numeroGiocatoriCPU: int
+  + ImpostazioniPartita()
+  + getNumeroGiocatori(): int
+  + setNumeroGiocatori(n: int): void
+  + getNomeGiocatore(indice: int): String
+  + setNomeGiocatore(indice: int, nome: String): void
+  + getTipoGiocatore(indice: int): TipoGiocatore
+  + setTipoGiocatore(indice: int, tipo: TipoGiocatore): void
+  + getColoreGiocatore(indice: int): Colore
+  + setColoreGiocatore(indice: int, colore: Colore): void
+  + getNumeroGiocatoriCPU(): int
+  + increaseNumeroGiocatoriCPU(): void
+  + getColoriSelezionati(): List<Colore>
+  + aggiungiColoreSelezionato(colore: Colore): void
+  + getColoriDisponibili(): List<Colore>
+  + rimuoviColoreDisponibile(colore: Colore): void
+}
+
+' UI CLASSES
+class InterfacciaUtente {
+  - giocoController: GiocoController
+  + mostraMenuPrincipale(): void
+  + mostraFormNumeroGiocatori(): void
+  + mostraOpzioniTipoGiocatore(indice: int): void
+  + mostraFormNomeGiocatore(indice: int): void
+  + mostraOpzioniColori(coloriDisponibili: List<Colore>): void
+  + mostraTabelloneEGiocatori(partita: Partita): void
+  + mostraMessaggioErrore(messaggio: String): void
+  + mostraRisultatoDadi(valori: int[]): void
+  + mostraEffettoCasella(effetto: TipoEffettoCasella): void
+  + mostraVincitore(giocatore: Giocatore): void
+}
+
+' RELAZIONI
+GiocoController -- PartitaController
+GiocoController -- ImpostazioniPartita
+GiocoController -- Partita
+PartitaController -- Partita
+InterfacciaUtente -- GiocoController
+
+Partita "1" *-- "1..*" Giocatore : contiene
+Partita "1" *-- "1" Tabellone : contiene
+Tabellone "1" *-- "63" Casella : contiene
+Giocatore "1" *-- "1" Pedina : possiede
+
+GiocatoreFactory ..> Giocatore : crea
+Giocatore -- TipoGiocatore
+Pedina -- Colore
+Casella -- TipoEffettoCasella
+Partita -- StatoPartita
+
+@enduml

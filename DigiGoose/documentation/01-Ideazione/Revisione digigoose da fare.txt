@@ -1,0 +1,3 @@
+1) Sistema non è un attore. Devo segnalare meglio questa sezione.
+2) Non è presente il caso d'uso per la gestione dei turni, che claude dice essere fondamentale.
+3) Anziché riavviare l'applicazione, devo farmi dire un modo per gestire l'errore nei casi UC1 e UC2.
