@@ -82,22 +82,21 @@ public class GiocoController {
     
     public void inizializzaNuovaPartita() {
         partitaCorrente = new Partita();
-        
-        // Crea e aggiungi i giocatori alla partita
+
         for (int i = 0; i < impostazioniPartita.getNumeroGiocatori(); i++) {
             String nome = impostazioniPartita.getNomeGiocatore(i);
             TipoGiocatore tipo = impostazioniPartita.getTipoGiocatore(i);
             Colore colore = impostazioniPartita.getColoreGiocatore(i);
-            
+
             Giocatore giocatore = GiocatoreFactory.creaGiocatore(nome, tipo, colore);
             partitaCorrente.aggiungiGiocatore(giocatore);
         }
-        
-        // Inizializza il tabellone e le posizioni
+
         partitaCorrente.setTabellone(new Tabellone());
         partitaCorrente.inizializzaPosizioni();
-        
-        // Cambia lo stato della partita
+
+        partitaCorrente.determinaOrdineGiocatori();
+
         partitaCorrente.setStato(StatoPartita.IN_CORSO);
     }
     

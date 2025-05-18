@@ -1,0 +1,57 @@
+@startuml
+title Configurazione: Selezione Colore Pedina e Verifica Unicità
+
+actor Utente
+participant InterfacciaUtente as UI
+participant GiocoController as GC
+participant ImpostazioniPartita as Impostazioni
+participant Colore as Colore
+
+UI -> UI: mostraOpzioniColori(indice)
+activate UI
+
+UI -> Impostazioni: getColoriDisponibili()
+activate Impostazioni
+Impostazioni -> Colore: getColoriDisponibili()
+activate Colore
+Colore --> Impostazioni: listaColori
+deactivate Colore
+Impostazioni --> UI: Lista colori disponibili
+deactivate Impostazioni
+
+UI -> Utente: Mostra lista colori
+Utente -> UI: Input scelta colore (es. 1 per ROSSO)
+
+UI -> GC: selezionaColorePedina(indice, ROSSO)
+activate GC
+
+GC -> Impostazioni: verificaColoreUnico(ROSSO)
+activate Impostazioni
+Impostazioni -> Impostazioni: getColoriSelezionati()
+activate Impostazioni
+Impostazioni --> Impostazioni: Lista colori selezionati
+deactivate Impostazioni
+Impostazioni --> GC: Risultato verifica (true/false)
+deactivate Impostazioni
+
+alt Colore non unico (false)
+    GC --> UI: false
+    deactivate GC
+    UI -> Utente: Messaggio errore "Colore già selezionato"
+    UI -> UI: mostraOpzioniColori(indice)
+else Colore unico (true)
+    GC -> Impostazioni: setColoreGiocatore(indice, ROSSO)
+    activate Impostazioni
+    Impostazioni -> Colore: validaColore(ROSSO)
+    activate Colore
+    Colore --> Impostazioni: true
+    deactivate Colore
+    Impostazioni -> Impostazioni: aggiungiColoreSelezionato(ROSSO)
+    deactivate Impostazioni
+    GC --> UI: true
+    deactivate GC
+    UI -> UI: Procede alla configurazione successiva
+end
+
+deactivate UI
+@enduml

@@ -30,4 +30,12 @@ public class Dadi {
     public int[] getValori() {
         return valori;
     }
+    
+    public void setValori(int[] valori) {
+        if (valori.length == this.valori.length) {
+            this.valori = valori;
+        } else {
+            throw new IllegalArgumentException("Il numero di valori deve essere uguale a " + this.valori.length);
+        }
+    }
 }

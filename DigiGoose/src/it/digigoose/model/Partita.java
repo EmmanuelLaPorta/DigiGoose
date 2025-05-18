@@ -1,11 +1,12 @@
 package it.digigoose.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class Partita {
+public class Partita implements Serializable {
     private String id;
     private Date dataCreazione;
     private List<Giocatore> giocatori;
@@ -14,6 +15,10 @@ public class Partita {
     private Tabellone tabellone;
     private int turnoCorrente;
     private StatoPartita stato;
+    private int giroCorrente = 1;
+    private int indicePrimoGiocatoreGiroAttuale = 0; // Indice del primo giocatore nel giro corrente
+
+    private static final long serialVersionUID = 1L;
     
     public Partita() {
         this.id = java.util.UUID.randomUUID().toString();
@@ -54,6 +59,16 @@ public class Partita {
         this.ordineGiocatori = ordine;
     }
     
+    public int getGiroCorrente() {
+        return giroCorrente;
+    }
+
+    public void incrementaGiro() {
+        giroCorrente++;
+        // Resetta il turno quando inizia un nuovo giro
+        turnoCorrente = 1;
+    }
+
     public Giocatore getGiocatoreCorrente() {
         return giocatoreCorrente;
     }
@@ -111,12 +126,34 @@ public class Partita {
         int indiceCorrente = ordineGiocatori.indexOf(giocatoreCorrente);
         int indiceProssimo = (indiceCorrente + 1) % ordineGiocatori.size();
         
+        // Se stiamo tornando al primo giocatore, incrementa il giro
+        if (indiceProssimo == 0) {
+            incrementaGiro();
+        } else {
+            // Altrimenti, incrementa il turno all'interno del giro corrente
+            incrementaTurno();
+        }
+        
         giocatoreCorrente = ordineGiocatori.get(indiceProssimo);
         
         // Se il prossimo giocatore deve saltare il turno, lo aggiorniamo e passiamo al prossimo
         while (giocatoreCorrente.devePassareTurno()) {
-            giocatoreCorrente.decrementaTurniSaltati();
+            // Gestione speciale per ATTENDI_DADO e PRIGIONE
+            if (giocatoreCorrente.getTurniSaltati() < 0) {
+                // Non facciamo nulla, questo giocatore dovrà rimanere fermo
+                // finché la condizione non verrà sbloccata tramite un altro metodo
+            } else {
+                // Comportamento normale: decrementa i turni saltati
+                giocatoreCorrente.decrementaTurniSaltati();
+            }
+            
             indiceProssimo = (indiceProssimo + 1) % ordineGiocatori.size();
+            
+            // Se stiamo tornando al primo giocatore dopo aver gestito un salto di turno
+            if (indiceProssimo == 0) {
+                incrementaGiro();
+            }
+            
             giocatoreCorrente = ordineGiocatori.get(indiceProssimo);
         }
     }

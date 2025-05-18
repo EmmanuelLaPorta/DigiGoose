@@ -1,12 +1,16 @@
 package it.digigoose.model;
 
-public class Giocatore {
+import java.io.Serializable;
+
+public class Giocatore implements Serializable {
     private String id;
     private String nome;
     private TipoGiocatore tipo;
     private Pedina pedina;
     private int turniSaltati;
     private boolean richiedeRelancio;
+    
+    private static final long serialVersionUID = 1L;
     
     public Giocatore(String nome, TipoGiocatore tipo, Colore colore) {
         this.id = java.util.UUID.randomUUID().toString();
@@ -55,6 +59,14 @@ public class Giocatore {
     
     public void setTurniSaltati(int turni) {
         this.turniSaltati = turni;
+    }
+    
+    /**
+     * Aumenta il numero di turni da saltare
+     * @param numeroTurni il numero di turni aggiuntivi da saltare
+     */
+    public void saltaTurni(int numeroTurni) {
+        this.turniSaltati += numeroTurni;
     }
     
     public boolean getRichiedeRelancio() {

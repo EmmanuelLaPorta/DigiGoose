@@ -1,0 +1,120 @@
+@startuml
+title Gestione Turno Giocatore Computer (CPU)
+
+actor Utente
+participant InterfacciaUtente as UI
+participant Partita as Partita
+participant GiocatoreCPU as CPU
+participant PartitaController as PC
+participant Dadi as Dadi
+participant Tabellone as Tabellone
+participant Casella as Casella
+
+UI -> UI: gestisciTurnoComputer(partita, CPU)
+activate UI #pink
+
+UI -> Utente: "Turno del computer (Premi INVIO)"
+Utente -> UI: Input (INVIO)
+
+create PC
+UI -> PC: new(partita)
+UI -> PC: tiraDadi()
+activate PC
+
+create Dadi
+PC -> Dadi: new(6, 2)
+PC -> Dadi: lancia()
+activate Dadi
+Dadi --> PC: [valore1, valore2]
+deactivate Dadi
+
+PC --> UI: risultatoDadi
+deactivate PC
+UI -> Utente: "CPU ha lanciato: risultatoDadi"
+
+create PC
+UI -> PC: new(partita)
+UI -> PC: verificaSbloccoGiocatori(risultatoDadi)
+activate PC
+
+PC -> Partita: getGiocatori()
+activate Partita
+Partita --> PC: listaGiocatori
+deactivate Partita
+
+loop per ogni giocatore in listaGiocatori
+    PC -> CPU: getTurniSaltati()
+    activate CPU
+    CPU --> PC: turniBlocco
+    deactivate CPU
+    
+    alt risultatoDadi soddisfa condizione sblocco
+        PC -> CPU: setTurniSaltati(0)
+        activate CPU
+        deactivate CPU
+    end
+end
+deactivate PC
+
+UI -> CPU: getTurniSaltati()
+activate CPU
+CPU --> UI: turniRimasti
+deactivate CPU
+
+alt turniRimasti >= 0
+    UI -> Dadi: getSomma(risultatoDadi)
+    activate Dadi
+    Dadi --> UI: passiTotali
+    deactivate Dadi
+    
+    create PC
+    UI -> PC: new(partita)
+    UI -> PC: muoviGiocatore(CPU, passiTotali)
+    activate PC
+    
+    PC -> CPU: getPosizione()
+    activate CPU
+    CPU --> PC: posizioneAttuale
+    deactivate CPU
+    
+    PC -> Partita: getTabellone()
+    activate Partita
+    Partita --> PC: tabellone
+    deactivate Partita
+    
+    PC -> Tabellone: getCasella(posizioneAttuale + passiTotali)
+    activate Tabellone
+    Tabellone --> PC: casellaDestinazione
+    deactivate Tabellone
+    
+    PC -> CPU: setPosizione(nuovaPosizione)
+    activate CPU
+    deactivate CPU
+    
+    alt casellaDestinazione != null
+        PC -> Casella: applicaEffetto(CPU)
+        activate Casella
+        
+        alt casellaDestinazione.isSpeciale()
+            Casella -> CPU: modificaStato()
+            activate CPU
+            deactivate CPU
+            
+            alt casellaDestinazione.isVittoria()
+                PC -> Partita: setStato(TERMINATA)
+                activate Partita
+                deactivate Partita
+            end
+        end
+        deactivate Casella
+    end
+    PC --> UI: esitoMovimento
+    deactivate PC
+    
+    UI -> Utente: "CPU si è mosso a posizione: nuovaPosizione"
+else
+    UI -> Utente: "CPU rimane bloccato (turni rimasti: turniRimasti)"
+end
+
+deactivate UI
+@enduml

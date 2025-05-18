@@ -1,0 +1,97 @@
+@startuml
+title Ciclo di Gioco Principale
+
+actor Utente
+participant InterfacciaUtente as UI
+participant Partita as Partita
+participant Giocatore as Giocatore
+participant PartitaController as PC
+
+UI -> UI: mostraTabelloneEGiocatori(partita)
+activate UI
+
+loop while Partita.getStato() == IN_CORSO
+    UI -> Partita: getTurnoCorrente()
+    activate Partita
+    Partita --> UI: turnoCorrente
+    deactivate Partita
+    
+    UI -> Partita: getGiocatoreCorrente()
+    activate Partita
+    Partita --> UI: giocatoreCorrente
+    deactivate Partita
+    
+    UI -> Giocatore: getTurniSaltati()
+    activate Giocatore
+    Giocatore --> UI: turniSaltati
+    deactivate Giocatore
+
+    alt turniSaltati > 0
+        UI -> Utente: Mostra "Salta turno (rimasti: turniSaltati)"
+        UI -> Giocatore: decrementaTurniSaltati()
+        activate Giocatore
+        deactivate Giocatore
+        
+        UI -> Partita: passaAlProssimoGiocatore()
+        activate Partita
+        Partita -> Partita: aggiornaGiocatoreCorrente()
+        deactivate Partita
+    else
+        alt Giocatore.getTipo() == UMANO
+            UI -> UI: gestisciTurnoUmano(partita)
+            activate UI
+            note right: Interazione con l'utente
+            deactivate UI
+        else
+            UI -> UI: gestisciTurnoComputer(partita)
+            activate UI
+            note right: Logica automatica
+            deactivate UI
+        end
+
+        create PC
+        UI -> PC: new(partita)
+        UI -> PC: verificaVincitore()
+        activate PC
+        
+        PC -> Giocatore: getPosizione()
+        activate Giocatore
+        Giocatore --> PC: posizioneAttuale
+        deactivate Giocatore
+        
+        PC -> Partita: verificaCondizioniVittoria()
+        activate Partita
+        Partita --> PC: risultatoVerifica
+        deactivate Partita
+        
+        PC --> UI: isWinner
+        deactivate PC
+
+        alt isWinner
+            UI -> UI: mostraVincitore(giocatoreCorrente)
+            UI -> Partita: setStato(TERMINATA)
+            activate Partita
+            deactivate Partita
+            break
+        else
+            UI -> Giocatore: getTurniSaltati()
+            activate Giocatore
+            Giocatore --> UI: turniSaltati
+            deactivate Giocatore
+            
+            alt turniSaltati == 0
+                UI -> Partita: passaAlProssimoGiocatore()
+                activate Partita
+                Partita -> Partita: aggiornaGiocatoreCorrente()
+                deactivate Partita
+            end
+        end
+    end
+end
+
+UI -> Utente: "Partita terminata"
+UI -> Utente: "Premi INVIO per continuare"
+Utente -> UI: Input (INVIO)
+UI -> UI: mostraMenuPrincipale()
+deactivate UI
+@enduml

@@ -1,8 +1,12 @@
 package it.digigoose.model;
 
-public class Pedina {
+import java.io.Serializable;
+
+public class Pedina implements Serializable {
     private Colore colore;
     private int posizione;
+    
+    private static final long serialVersionUID = 1L;
     
     public Pedina(Colore colore) {
         this.colore = colore;

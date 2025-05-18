@@ -1,7 +1,7 @@
 package it.digigoose.model;
 
 public enum TipoEffettoCasella {
-	NESSUNO,
+    NESSUNO,
     BALZO_E_RILANCIA,
     PONTE,
     RITORNO_INIZIO,
@@ -14,5 +14,8 @@ public enum TipoEffettoCasella {
     RADDOPPIA_PUNTEGGIO,
     VAI_INDIETRO,
     LABIRINTO,
-    PRIGIONE
+    PRIGIONE,
+    POZZO,
+    ATTENDI_DADO_SPECIFICO, // Richiede valori specifici dei dadi (3, 6) o (4, 5)
+    VOLA_E_FERMA           // Effetto combinato: vola a una casella e fermati un turno
 }

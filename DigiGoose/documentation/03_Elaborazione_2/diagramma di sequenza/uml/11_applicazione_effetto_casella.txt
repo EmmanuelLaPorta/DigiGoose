@@ -1,0 +1,71 @@
+@startuml
+title Applicazione Effetto Casella Esteso (Controller)
+
+participant PartitaController as PC
+participant Casella as Casella
+participant Giocatore as Giocatore
+participant Partita as Partita
+participant Dadi as Dadi
+
+PC -> Casella: getNumero()
+activate Casella
+Casella --> PC: numeroCasella
+deactivate Casella
+
+alt numeroCasella == 63
+    PC -> Partita: setStato(TERMINATA)
+    activate Partita
+    deactivate Partita
+else Casella.isSpeciale()
+    PC -> Casella: applicaEffetto(giocatore)
+    activate Casella
+    Casella -> Giocatore: modificaStato()
+    activate Giocatore
+    Giocatore --> Casella: conferma
+    deactivate Giocatore
+    Casella --> PC: esitoApplicazione
+    deactivate Casella
+
+    PC -> Casella: getTipoEffetto()
+    activate Casella
+    Casella --> PC: tipoEffetto
+    deactivate Casella
+
+    alt tipoEffetto == RILANCIA_TORNA_INDIETRO
+        create Dadi
+        PC -> Dadi: new(6, 2)
+        PC -> Dadi: lancia()
+        activate Dadi
+        Dadi --> PC: nuovoLancio
+        deactivate Dadi
+        
+        PC -> Giocatore: getPosizione()
+        activate Giocatore
+        Giocatore --> PC: posizioneAttuale
+        deactivate Giocatore
+        
+        PC -> Giocatore: setPosizione(posizioneAttuale - somma(nuovoLancio))
+        activate Giocatore
+        deactivate Giocatore
+
+    else tipoEffetto == RADDOPPIA_MOVIMENTO
+        PC -> Giocatore: getPosizione()
+        activate Giocatore
+        Giocatore --> PC: posizioneAttuale
+        deactivate Giocatore
+        
+        PC -> Giocatore: setPosizione(posizioneAttuale + somma(valoreDadi)*2)
+        activate Giocatore
+        deactivate Giocatore
+
+    else tipoEffetto == RADDOPPIA_PUNTEGGIO
+        PC -> Giocatore: incrementaPunteggio(valoreDadi*2)
+        activate Giocatore
+        deactivate Giocatore
+    end
+end
+
+PC --> Partita: aggiornaStatoGiocatore(giocatore)
+activate Partita
+deactivate Partita
+@enduml

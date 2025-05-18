@@ -1,0 +1,81 @@
+@startuml
+title Configurazione: Conferma Impostazioni e Inizializzazione Partita
+
+actor Utente
+participant InterfacciaUtente as UI
+participant GiocoController as GC
+participant ImpostazioniPartita as Impostazioni
+participant Partita as Partita
+participant GiocatoreFactory as Factory
+participant Giocatore as Giocatore
+participant Tabellone as Tabellone
+
+UI -> UI: confermaImpostazioni()
+activate UI
+
+UI -> Utente: Mostra riepilogo impostazioni
+UI -> Utente: Richiesta conferma (S/N)
+Utente -> UI: Input risposta (es. S)
+
+alt Risposta = S
+    UI -> GC: confermaImpostazioni()
+    activate GC
+    
+    GC -> GC: inizializzaNuovaPartita()
+    activate GC
+    
+    create Partita
+    GC -> Partita: new(Impostazioni)
+    activate Partita
+    
+    loop per ogni giocatore configurato
+        GC -> Impostazioni: getGiocatoreConfig(i)
+        activate Impostazioni
+        Impostazioni --> GC: ConfigurazioneGiocatore
+        deactivate Impostazioni
+        
+        create Factory
+        GC -> Factory: creaGiocatore(config)
+        activate Factory
+        create Giocatore
+        Factory -> Giocatore: new(config)
+        Factory --> GC: istanzaGiocatore
+        deactivate Factory
+        
+        GC -> Partita: aggiungiGiocatore(giocatore)
+    end
+    
+    create Tabellone
+    GC -> Tabellone: new()
+    activate Tabellone
+    Tabellone -> Tabellone: inizializza()
+    deactivate Tabellone
+    
+    GC -> Partita: setTabellone(tabellone)
+    GC -> Partita: inizializzaPosizioni()
+    
+    loop per ogni giocatore
+        Partita -> Giocatore: setPosizioneIniziale()
+        activate Giocatore
+        deactivate Giocatore
+    end
+    
+    GC -> Partita: determinaOrdineGiocatori()
+    Partita -> Partita: mischiaOrdine()
+    Partita -> Partita: setGiocatoreCorrente(0)
+    
+    GC -> Partita: setStato(IN_CORSO)
+    deactivate Partita
+    deactivate GC
+    
+    GC --> UI: confermaAvvio(partita)
+    deactivate GC
+    
+    UI -> UI: mostraSchermataDiGioco(partita)
+else Risposta = N
+    UI -> Utente: Messaggio "Configurazione annullata"
+    UI -> UI: mostraMenuPrincipale()
+end
+
+deactivate UI
+@enduml

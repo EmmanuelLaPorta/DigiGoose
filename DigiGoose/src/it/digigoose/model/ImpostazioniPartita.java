@@ -41,10 +41,17 @@ public class ImpostazioniPartita {
     }
     
     public void setNomeGiocatore(int indice, String nome) {
-        if (indice >= 0 && indice < nomiGiocatori.size()) {
-            nomiGiocatori.set(indice, nome);
-        } else if (indice == nomiGiocatori.size()) {
+        if (indice < 0 || indice > nomiGiocatori.size()) {
+            throw new IndexOutOfBoundsException("Indice " + indice + " non valido per la lista di " + nomiGiocatori.size() + " nomi.");
+        }
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Il nome del giocatore non può essere vuoto.");
+        }
+
+        if (indice == nomiGiocatori.size()) {
             nomiGiocatori.add(nome);
+        } else {
+            nomiGiocatori.set(indice, nome);
         }
     }
     
@@ -56,12 +63,19 @@ public class ImpostazioniPartita {
     }
     
     public void setTipoGiocatore(int indice, TipoGiocatore tipo) {
-        if (indice >= 0 && indice < tipiGiocatori.size()) {
-            tipiGiocatori.set(indice, tipo);
-        } else if (indice == tipiGiocatori.size()) {
-            tipiGiocatori.add(tipo);
-        }
-    }
+       if (indice < 0 || indice > tipiGiocatori.size()) {
+           throw new IndexOutOfBoundsException("Indice " + indice + " non valido per la lista di " + tipiGiocatori.size() + " tipi.");
+       }
+        if (tipo == null) {
+           throw new IllegalArgumentException("Il tipo di giocatore non può essere null.");
+       }
+
+       if (indice == tipiGiocatori.size()) {
+           tipiGiocatori.add(tipo);
+       } else {
+           tipiGiocatori.set(indice, tipo);
+       }
+   }
     
     public Colore getColoreGiocatore(int indice) {
         if (indice >= 0 && indice < coloriSelezionati.size()) {
@@ -71,10 +85,17 @@ public class ImpostazioniPartita {
     }
     
     public void setColoreGiocatore(int indice, Colore colore) {
-        if (indice >= 0 && indice < coloriSelezionati.size()) {
-            coloriSelezionati.set(indice, colore);
-        } else if (indice == coloriSelezionati.size()) {
+        if (indice < 0 || indice > coloriSelezionati.size()) {
+            throw new IndexOutOfBoundsException("Indice " + indice + " non valido per la lista di " + coloriSelezionati.size() + " colori.");
+        }
+        if (colore == null) {
+            throw new IllegalArgumentException("Il colore del giocatore non può essere null.");
+        }
+
+        if (indice == coloriSelezionati.size()) {
             coloriSelezionati.add(colore);
+        } else {
+            coloriSelezionati.set(indice, colore);
         }
     }
     

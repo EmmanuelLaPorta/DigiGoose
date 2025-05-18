@@ -1,0 +1,38 @@
+@startuml
+
+actor Utente
+participant Main
+participant GiocoController as GC
+participant InterfacciaUtente as UI
+participant ImpostazioniPartita as Impostazioni
+
+Utente -> Main: start()
+activate Main
+
+create GC
+Main -> GC: new()
+
+create UI
+Main -> UI: new(gc)
+
+Main -> UI: mostraMenuPrincipale()
+activate UI
+UI -> Utente: Mostra opzioni menu
+Utente -> UI: Input scelta (es. 1: Nuova Partita)
+UI -> UI: Processa scelta
+UI -> GC: avviaNuovaPartita()
+activate GC
+
+create Impostazioni
+GC -> Impostazioni: new()
+
+GC -> UI: confermaCreazionePartita()
+UI -> UI: mostraFormNumeroGiocatori()
+activate UI
+UI -> Utente: Richiesta numero giocatori
+
+deactivate UI
+deactivate GC
+deactivate Main
+
+@enduml

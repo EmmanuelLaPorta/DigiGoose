@@ -1,0 +1,20 @@
+@startuml
+title Configurazione: Selezione Tipo Giocatore
+
+actor User
+participant InterfacciaUtente as UI
+participant GiocoController as GC
+participant ImpostazioniPartita as Impostazioni
+
+UI -> User: Richiesta tipo giocatore (per indice i)
+activate UI
+User -> UI: Input scelta (es. 1 per Umano)
+UI -> GC: selezionaTipoGiocatore(i, "UMANO")
+activate GC
+GC -> Impostazioni: setTipoGiocatore(i, TipoGiocatore.UMANO)
+activate Impostazioni
+deactivate Impostazioni
+deactivate GC
+UI -> UI: Decide prossimo passo (es. mostraFormNomeGiocatore)
+deactivate UI
+@enduml

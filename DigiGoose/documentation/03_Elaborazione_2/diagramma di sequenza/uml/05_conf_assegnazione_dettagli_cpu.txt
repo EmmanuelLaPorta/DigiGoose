@@ -1,0 +1,47 @@
+@startuml
+title Configurazione: Assegnazione Dettagli Giocatore Computer (CPU)
+
+actor Utente
+participant InterfacciaUtente as UI
+participant GiocoController as GC
+participant ImpostazioniPartita as Impostazioni
+participant Colore as Colore
+
+UI -> GC: selezionaTipoGiocatore(i, "COMPUTER")
+activate GC
+
+GC -> Impostazioni: setTipoGiocatore(i, TipoGiocatore.COMPUTER)
+activate Impostazioni
+deactivate Impostazioni
+
+GC -> GC: assegnaNomeCPU(i)
+activate GC
+GC -> Impostazioni: increaseNumeroGiocatoriCPU()
+activate Impostazioni
+deactivate Impostazioni
+GC -> Impostazioni: setNomeGiocatore(i, "CPU N")
+activate Impostazioni
+deactivate Impostazioni
+deactivate GC
+
+GC -> GC: selezionaColorePedinaCPU(i)
+activate GC
+GC -> Impostazioni: getColoriDisponibili()
+activate Impostazioni
+Impostazioni --> GC: Lista colori disponibili
+deactivate Impostazioni
+
+GC -> Colore: getRandom()
+activate Colore
+Colore --> GC: coloreCPU
+deactivate Colore
+
+GC -> Impostazioni: setColoreGiocatore(i, coloreCPU)
+activate Impostazioni
+Impostazioni -> Impostazioni: Aggiunge colore a selezionati
+deactivate Impostazioni
+deactivate GC
+
+UI -> Utente: Mostra nome e colore assegnati
+deactivate UI
+@enduml

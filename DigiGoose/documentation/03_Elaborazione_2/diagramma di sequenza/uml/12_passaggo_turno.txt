@@ -1,0 +1,66 @@
+@startuml
+title Passaggio del Turno - Logica Aggiornata
+
+participant Partita as Partita
+participant Giocatore as Giocatore
+
+== Logica Base Passaggio Turno ==
+Partita -> Partita: getOrdineGiocatori()
+activate Partita
+Partita --> Partita: ordineGiocatori
+Partita -> Partita: getGiocatoreCorrente()
+Partita --> Partita: giocatoreCorrente
+Partita -> Partita: indexOf(giocatoreCorrente)
+Partita --> Partita: indiceCorrente
+deactivate Partita
+
+Partita -> Partita: calcolaIndiceProssimo()
+activate Partita
+alt indiceProssimo == 0
+    Partita -> Partita: incrementaGiro()
+    Partita -> Partita: turnoCorrente = 1
+else
+    Partita -> Partita: incrementaTurno()
+end
+Partita --> Partita: indiceProssimo
+deactivate Partita
+
+Partita -> Partita: getGiocatore(indiceProssimo)
+Partita --> Partita: prossimoGiocatore
+
+== Gestione Blocchi ==
+loop while prossimoGiocatore.deveSaltareTurno()
+    Partita -> prossimoGiocatore: getTurniSaltati()
+    activate Giocatore
+    Giocatore --> Partita: turniSaltati
+    deactivate Giocatore
+    
+    alt turniSaltati > 0
+        Partita -> prossimoGiocatore: decrementaTurniSaltati()
+        activate Giocatore
+        deactivate Giocatore
+        
+        Partita -> Partita: calcolaIndiceProssimo()
+        activate Partita
+        Partita --> Partita: nuovoIndice
+        deactivate Partita
+        
+        Partita -> Partita: getGiocatore(nuovoIndice)
+        Partita --> Partita: prossimoGiocatore
+    else turniSaltati < 0
+        note right of Partita: Blocco condizionale gestito\nnel ciclo di gioco principale
+        break
+    end
+end
+
+Partita -> Partita: setGiocatoreCorrente(prossimoGiocatore)
+
+note right of Partita
+  Logica effettiva v2:
+  - I blocchi con turniSaltati < 0 NON sono gestiti qui
+  - Vengono gestiti nel ciclo principale dell'UI
+  - Questo metodo gestisce solo:
+    * Passaggio normale del turno
+    * Blocchi fissi (turniSaltati > 0)
+end note
+@enduml
