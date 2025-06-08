@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Contiene le impostazioni di configurazione per una nuova partita.
+ * Memorizza il numero di giocatori, i loro nomi, tipi (umano/CPU),
+ * e i colori delle pedine selezionati.
+ */
+
+
 public class ImpostazioniPartita {
     private int numeroGiocatori;
     private List<String> nomiGiocatori;
@@ -25,7 +32,6 @@ public class ImpostazioniPartita {
     
     public void setNumeroGiocatori(int n) {
         this.numeroGiocatori = n;
-        // Inizializza le liste alla dimensione corretta
         for (int i = nomiGiocatori.size(); i < n; i++) {
             nomiGiocatori.add("");
             tipiGiocatori.add(null);

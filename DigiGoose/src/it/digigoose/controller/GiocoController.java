@@ -5,6 +5,15 @@ import java.util.Random;
 
 import it.digigoose.model.*;
 
+
+/**
+ * Controller della configurazione iniziale di una nuova partita.
+ * Gestisce l'inserimento del numero di giocatori, la selezione del tipo (umano/CPU),
+ * l'assegnazione dei nomi e dei colori delle pedine.
+ * Una volta confermate le impostazioni, inizializza una nuova partita.
+ */
+
+
 public class GiocoController {
     private Partita partitaCorrente;
     private ImpostazioniPartita impostazioniPartita;
@@ -14,7 +23,6 @@ public class GiocoController {
     }
     
     public void avviaNuovaPartita() {
-        // Resetta le impostazioni per una nuova partita
         this.impostazioniPartita = new ImpostazioniPartita();
     }
     
@@ -105,7 +113,6 @@ public class GiocoController {
     }
     
     public void visualizzaTabellone() {
-        // Questa funzione verrà completata quando implementeremo l'UI
     }
     
     public Partita getPartitaCorrente() {

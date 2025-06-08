@@ -7,10 +7,18 @@ public class Giocatore implements Serializable {
     private String nome;
     private TipoGiocatore tipo;
     private Pedina pedina;
-    private int turniSaltati;
+    private int turniSaltati; 
     private boolean richiedeRelancio;
     
     private static final long serialVersionUID = 1L;
+    
+    
+    
+    /**
+     * definizione di un nuovo giocatore.
+     *
+     */
+
     
     public Giocatore(String nome, TipoGiocatore tipo, Colore colore) {
         this.id = java.util.UUID.randomUUID().toString();
@@ -61,10 +69,9 @@ public class Giocatore implements Serializable {
         this.turniSaltati = turni;
     }
     
-    /**
-     * Aumenta il numero di turni da saltare
-     * @param numeroTurni il numero di turni aggiuntivi da saltare
-     */
+    
+    //metodi per i turni saltati
+    
     public void saltaTurni(int numeroTurni) {
         this.turniSaltati += numeroTurni;
     }

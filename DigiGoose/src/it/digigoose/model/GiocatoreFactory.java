@@ -1,5 +1,10 @@
 package it.digigoose.model;
 
+/**
+ * Factory class per la creazione di oggetti Giocatore.
+ */
+
+
 public class GiocatoreFactory {
     
     public static Giocatore creaGiocatore(String nome, TipoGiocatore tipo, Colore colore) {

@@ -1,9 +1,14 @@
 package it.digigoose.controller;
 
-// import java.io.IOException;
 import java.util.List;
-
 import it.digigoose.model.*;
+
+
+/**
+ * Controller per la gestione della logica di una partita in corso.
+ * Coordina le azioni di gioco come il lancio dei dadi, il movimento delle pedine,
+ * l'applicazione degli effetti delle caselle e il passaggio del turno.
+ */
 
 
 public class PartitaController {
@@ -29,8 +34,6 @@ public class PartitaController {
     }
     
     public void passaTurno() {
-        // Non è più necessario gestire il giroCorrente qui
-        // poiché sarà gestito nella classe Partita
         partita.passaAlProssimoGiocatore();
     }
     
@@ -39,7 +42,6 @@ public class PartitaController {
     }
     
     public int[] tiraDadi() {
-        // Per il gioco dell'oca classico, si usano due dadi a sei facce
         Dadi dadi = new Dadi(6, 2);
         return dadi.lancia();
     }
@@ -129,11 +131,7 @@ public class PartitaController {
         }
     }
 
-    // Metodi da aggiungere alla classe PartitaController
-
-    /**
-     * Gestisce gli effetti speciali che richiedono interazione con i dadi
-     */
+    
     public void gestisciEffettiSpeciali(Casella casella, Giocatore giocatore, int[] valoreDadi) {
         if (casella == null || !casella.isSpeciale()) return;
         

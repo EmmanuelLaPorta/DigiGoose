@@ -1,19 +1,17 @@
 package it.digigoose;
 
+import javax.swing.SwingUtilities;
 import it.digigoose.controller.GiocoController;
-import it.digigoose.view.InterfacciaUtente;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("DigiGoose - Gioco dell'Oca Digitale");
+        System.out.println("DigiGoose - il gioco dell'oca digitale");
         
-        // Inizializza il controller
         GiocoController giocoController = new GiocoController();
         
-        // Inizializza l'interfaccia utente
-        InterfacciaUtente ui = new InterfacciaUtente(giocoController);
-        
-        // Avvia l'applicazione
-        ui.mostraMenuPrincipale();
+        SwingUtilities.invokeLater(() -> {
+            it.digigoose.view.InterfacciaUtente ui = new it.digigoose.view.InterfacciaUtente(giocoController);
+            ui.creaEmostraGUI(); 
+        });
     }
 }

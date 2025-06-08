@@ -1,8 +1,12 @@
 package it.digigoose.model;
 
+/**
+ * rappresenta la lista di tutti gli effetti delle caselle speciali
+ */
+
 public enum TipoEffettoCasella {
     NESSUNO,
-    BALZO_E_RILANCIA,
+    RILANCIA,
     PONTE,
     RITORNO_INIZIO,
     RADDOPPIA_MOVIMENTO,
@@ -16,6 +20,6 @@ public enum TipoEffettoCasella {
     LABIRINTO,
     PRIGIONE,
     POZZO,
-    ATTENDI_DADO_SPECIFICO, // Richiede valori specifici dei dadi (3, 6) o (4, 5)
-    VOLA_E_FERMA           // Effetto combinato: vola a una casella e fermati un turno
+    ATTENDI_DADO_SPECIFICO, 
+    VOLA_E_FERMA           
 }

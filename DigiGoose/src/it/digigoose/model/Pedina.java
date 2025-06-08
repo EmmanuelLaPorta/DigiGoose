@@ -2,6 +2,13 @@ package it.digigoose.model;
 
 import java.io.Serializable;
 
+
+/**
+* Rappresenta una pedina del gioco.
+* Ogni pedina ha un colore e una posizione sul tabellone.
+*/
+
+
 public class Pedina implements Serializable {
     private Colore colore;
     private int posizione;
@@ -10,7 +17,7 @@ public class Pedina implements Serializable {
     
     public Pedina(Colore colore) {
         this.colore = colore;
-        this.posizione = 0; // Posizione iniziale
+        this.posizione = 0; 
     }
     
     public Colore getColore() {

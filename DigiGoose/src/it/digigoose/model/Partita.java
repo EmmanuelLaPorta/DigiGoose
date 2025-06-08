@@ -6,6 +6,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Rappresenta lo stato completo di una partita del gioco.
+ * Include informazioni sui giocatori, l'ordine di gioco, il giocatore corrente,
+ * il tabellone, il turno e lo stato generale della partita.
+ */
+
+
+
 public class Partita implements Serializable {
     private String id;
     private Date dataCreazione;
@@ -16,7 +24,7 @@ public class Partita implements Serializable {
     private int turnoCorrente;
     private StatoPartita stato;
     private int giroCorrente = 1;
-    private int indicePrimoGiocatoreGiroAttuale = 0; // Indice del primo giocatore nel giro corrente
+    private int indicePrimoGiocatoreGiroAttuale = 0; 
 
     private static final long serialVersionUID = 1L;
     
@@ -25,7 +33,7 @@ public class Partita implements Serializable {
         this.dataCreazione = new Date();
         this.giocatori = new ArrayList<>();
         this.ordineGiocatori = new ArrayList<>();
-        this.tabellone = new Tabellone();
+        this.tabellone = new Tabellone(); 
         this.turnoCorrente = 1;
         this.stato = StatoPartita.CONFIGURAZIONE;
     }
@@ -38,9 +46,17 @@ public class Partita implements Serializable {
     public String getId() {
         return id;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
     
     public Date getDataCreazione() {
         return dataCreazione;
+    }
+
+    public void setDataCreazione(Date dataCreazione) {
+        this.dataCreazione = dataCreazione;
     }
     
     public List<Giocatore> getGiocatori() {
@@ -56,16 +72,19 @@ public class Partita implements Serializable {
     }
     
     public void setOrdineGiocatori(List<Giocatore> ordine) {
-        this.ordineGiocatori = ordine;
+        this.ordineGiocatori = new ArrayList<>(ordine); 
     }
     
     public int getGiroCorrente() {
         return giroCorrente;
     }
 
+    public void setGiroCorrente(int giroCorrente) { 
+        this.giroCorrente = giroCorrente;
+    }
+
     public void incrementaGiro() {
         giroCorrente++;
-        // Resetta il turno quando inizia un nuovo giro
         turnoCorrente = 1;
     }
 
@@ -88,6 +107,10 @@ public class Partita implements Serializable {
     public int getTurnoCorrente() {
         return turnoCorrente;
     }
+
+    public void setTurnoCorrente(int turnoCorrente) { 
+        this.turnoCorrente = turnoCorrente;
+    }
     
     public void incrementaTurno() {
         turnoCorrente++;
@@ -102,11 +125,8 @@ public class Partita implements Serializable {
     }
     
     public List<Giocatore> determinaOrdineGiocatori() {
-        // Crea una copia della lista dei giocatori
         List<Giocatore> giocatoriMischiati = new ArrayList<>(giocatori);
-        // Mischia l'ordine in modo casuale
         Collections.shuffle(giocatoriMischiati);
-        // Imposta l'ordine e il primo giocatore
         setOrdineGiocatori(giocatoriMischiati);
         if (!giocatoriMischiati.isEmpty()) {
             setGiocatoreCorrente(giocatoriMischiati.get(0));
@@ -116,7 +136,7 @@ public class Partita implements Serializable {
     
     public void inizializzaPosizioni() {
         for (Giocatore giocatore : giocatori) {
-            giocatore.setPosizione(0); // Posizione iniziale
+            giocatore.setPosizione(0); 
         }
     }
     
@@ -126,34 +146,33 @@ public class Partita implements Serializable {
         int indiceCorrente = ordineGiocatori.indexOf(giocatoreCorrente);
         int indiceProssimo = (indiceCorrente + 1) % ordineGiocatori.size();
         
-        // Se stiamo tornando al primo giocatore, incrementa il giro
-        if (indiceProssimo == 0) {
-            incrementaGiro();
+        if (indiceProssimo == 0) { 
+             if (indiceCorrente == ordineGiocatori.size() -1 ) { 
+                incrementaGiro();
+             } else { 
+                incrementaTurno();
+             }
         } else {
-            // Altrimenti, incrementa il turno all'interno del giro corrente
             incrementaTurno();
         }
         
         giocatoreCorrente = ordineGiocatori.get(indiceProssimo);
         
-        // Se il prossimo giocatore deve saltare il turno, lo aggiorniamo e passiamo al prossimo
         while (giocatoreCorrente.devePassareTurno()) {
-            // Gestione speciale per ATTENDI_DADO e PRIGIONE
             if (giocatoreCorrente.getTurniSaltati() < 0) {
-                // Non facciamo nulla, questo giocatore dovrà rimanere fermo
-                // finché la condizione non verrà sbloccata tramite un altro metodo
+                break; 
             } else {
-                // Comportamento normale: decrementa i turni saltati
                 giocatoreCorrente.decrementaTurniSaltati();
             }
             
-            indiceProssimo = (indiceProssimo + 1) % ordineGiocatori.size();
-            
-            // Se stiamo tornando al primo giocatore dopo aver gestito un salto di turno
+            indiceProssimo = (ordineGiocatori.indexOf(giocatoreCorrente) + 1) % ordineGiocatori.size();
             if (indiceProssimo == 0) {
-                incrementaGiro();
+                 if (ordineGiocatori.indexOf(giocatoreCorrente) == ordineGiocatori.size() -1 ) {
+                    incrementaGiro();
+                 } else {
+                 }
             }
-            
+
             giocatoreCorrente = ordineGiocatori.get(indiceProssimo);
         }
     }
